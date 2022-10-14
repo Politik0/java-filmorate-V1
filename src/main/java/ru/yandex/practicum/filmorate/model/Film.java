@@ -5,11 +5,14 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.TreeSet;
 
-@Data
+
 @Builder
+@Data
 public class Film {
-    private int id;
+    private long id;
     private String name;
     @NotNull
     @NotBlank
@@ -18,5 +21,22 @@ public class Film {
     private LocalDate releaseDate;
     @NotNull
     private int duration;
+    @Builder.Default
+    private Set<Long> likes = new TreeSet<>();
 
+    public void addLike(long id) {
+        likes.add(id);
+    }
+
+    public void removeLike(long id) {
+        likes.remove(id);
+    }
+
+    public int getLikesCount() {
+        if (likes == null) {
+            return 0;
+        } else {
+            return likes.size();
+        }
+    }
 }
