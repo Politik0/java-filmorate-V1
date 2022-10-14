@@ -18,13 +18,13 @@ abstract class UserStorageTest<T extends UserStorage> {
     @Test
     void addNewUser() throws ValidationException, DataExistException {
         userStorage.addUser(user);
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
     void updateUser() throws ValidationException, DataExistException {
         addNewUser();
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
         User userUpdated = User.builder()
                 .id(user.getId())
                 .email("emailUpdated@mail.ru")
@@ -33,8 +33,8 @@ abstract class UserStorageTest<T extends UserStorage> {
                 .birthday(LocalDate.of(2000, 2, 20))
                 .build();
         userStorage.updateUser(userUpdated);
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("emailUpdated@mail.ru", userStorage.findAllUsers().get(0).getEmail(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("emailUpdated@mail.ru", userStorage.getAllUsers().get(0).getEmail(),
                 "Неверная почта после обновления");
     }
 
@@ -47,7 +47,7 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -59,7 +59,7 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -71,7 +71,7 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -91,8 +91,8 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("email@mail.ru", userStorage.findAllUsers().get(0).getEmail(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("email@mail.ru", userStorage.getAllUsers().get(0).getEmail(),
                 "Почта после обновления неверная");
     }
 
@@ -113,8 +113,8 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("email@mail.ru", userStorage.findAllUsers().get(0).getEmail(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("email@mail.ru", userStorage.getAllUsers().get(0).getEmail(),
                 "Почта после обновления неверная");
     }
 
@@ -135,8 +135,8 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Электронная почта не может быть пустой и должна содержать символ @", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("email@mail.ru", userStorage.findAllUsers().get(0).getEmail(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("email@mail.ru", userStorage.getAllUsers().get(0).getEmail(),
                 "Почта после обновления неверная");
     }
 
@@ -149,7 +149,7 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Логин не может быть пустым и содержать пробелы", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -161,7 +161,7 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Логин не может быть пустым и содержать пробелы", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -173,7 +173,7 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Логин не может быть пустым и содержать пробелы", exp.getMessage(),
                 "Валидация по почте не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -193,8 +193,8 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Логин не может быть пустым и содержать пробелы", exp.getMessage(),
                 "Валидация по логину не прошла");
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("Login", userStorage.findAllUsers().get(0).getLogin(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("Login", userStorage.getAllUsers().get(0).getLogin(),
                 "Логин после обновления неверная");
     }
 
@@ -215,8 +215,8 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Логин не может быть пустым и содержать пробелы", exp.getMessage(),
                 "Валидация по логину не прошла");
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("Login", userStorage.findAllUsers().get(0).getLogin(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("Login", userStorage.getAllUsers().get(0).getLogin(),
                 "Логин после обновления неверная");
     }
 
@@ -224,8 +224,8 @@ abstract class UserStorageTest<T extends UserStorage> {
     void shouldAddUserWhenNameEmpty() throws ValidationException, DataExistException {
         user.setName("");
         userStorage.addUser(user);
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("Login", userStorage.findAllUsers().get(0).getName(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("Login", userStorage.getAllUsers().get(0).getName(),
                 "Не используется логин вместо пустого имени");
     }
 
@@ -241,8 +241,8 @@ abstract class UserStorageTest<T extends UserStorage> {
                 .build();
 
         userStorage.updateUser(userUpdated);
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals("Login", userStorage.findAllUsers().get(0).getName(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals("Login", userStorage.getAllUsers().get(0).getName(),
                 "Не используется логин вместо пустого имени");
     }
 
@@ -255,7 +255,7 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Дата рождения не может быть в будущем.", exp.getMessage(),
                 "Валидация по дате рождения не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -267,14 +267,14 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Дата рождения не может быть в будущем.", exp.getMessage(),
                 "Валидация по дате рождения не прошла");
-        assertEquals(0, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(0, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
     void shouldAddUserWhenBirthdayYesterday() throws ValidationException, DataExistException {
         user.setBirthday(LocalDate.now().minusDays(1));
         userStorage.addUser(user);
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
     }
 
     @Test
@@ -294,8 +294,8 @@ abstract class UserStorageTest<T extends UserStorage> {
         );
         assertEquals("Дата рождения не может быть в будущем.", exp.getMessage(),
                 "Валидация по дате рождения не прошла");
-        assertEquals(1, userStorage.findAllUsers().size(), "Количество пользователей неверное");
-        assertEquals(LocalDate.of(2000, 2, 20), userStorage.findAllUsers().get(0).getBirthday(),
+        assertEquals(1, userStorage.getAllUsers().size(), "Количество пользователей неверное");
+        assertEquals(LocalDate.of(2000, 2, 20), userStorage.getAllUsers().get(0).getBirthday(),
                 "День рождения после обновления неверная");
     }
 

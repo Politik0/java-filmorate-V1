@@ -3,8 +3,6 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import ru.yandex.practicum.filmorate.exception.DataExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class UserService {
-    UserStorage userStorage;
+    private final UserStorage userStorage;
 
     @Autowired
     public UserService(UserStorage userStorage) {
@@ -32,12 +30,12 @@ public class UserService {
         return userStorage.updateUser(user);
     }
 
-    public List<User> findAllUsers() {
-        return userStorage.findAllUsers();
+    public List<User> getAllUsers() {
+        return userStorage.getAllUsers();
     }
 
-    public User findUserById(long id) throws DataExistException {
-        return userStorage.findUserById(id);
+    public User getUserById(long id) throws DataExistException {
+        return userStorage.getUserById(id);
     }
 
     public void removeAllUsers() {
@@ -49,8 +47,8 @@ public class UserService {
     }
 
     public void addFriend(long userId, long friendId) throws DataExistException {
-        User user = userStorage.findUserById(userId);
-        User friend = userStorage.findUserById(friendId);
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
         if (user.getFriends() != null) {
             if (user.getFriends().contains(friend.getId())) {
                 log.debug("Попытка повторно добавить друга c ID " + friend.getId() + " в друзья к пользователю " +
@@ -67,8 +65,8 @@ public class UserService {
     }
 
     public void removeFriend(long userId, long friendId) throws DataExistException {
-        User user = userStorage.findUserById(userId);
-        User friend = userStorage.findUserById(friendId);
+        User user = userStorage.getUserById(userId);
+        User friend = userStorage.getUserById(friendId);
         if (user.getFriends() != null) {
             if (!user.getFriends().contains(friend.getId())) {
                 log.debug("Попытка удалить друга c ID " + friend.getId() + ", который не был добавлен в друзья " +
@@ -83,11 +81,11 @@ public class UserService {
         log.debug("Пользователь с ID: " + user.getId() + " удален из друзей у друга с ID: " + friend.getId());
     }
 
-    public List<User> findAllFriends(long id) {
-        return findAllUsers().stream()
+    public List<User> getAllFriends(long id) {
+        return getAllUsers().stream()
                 .filter(x -> {
                     try {
-                        return findUserById(id).getFriends().contains(x.getId());
+                        return getUserById(id).getFriends().contains(x.getId());
                     } catch (DataExistException e) {
                         throw new RuntimeException(e.getMessage());
                     }
@@ -95,12 +93,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public List<User> findCommonFriends(long id, long otherId) throws DataExistException {
+    public List<User> getCommonFriends(long id, long otherId) throws DataExistException {
         List<User> commonFriends = new ArrayList<>();
-        for (long friendId : findUserById(id).getFriends()) {
-            for (long friendId2 : findUserById(otherId).getFriends()) {
+        for (long friendId : getUserById(id).getFriends()) {
+            for (long friendId2 : getUserById(otherId).getFriends()) {
                 if (friendId == friendId2) {
-                    commonFriends.add(findUserById(friendId2));
+                    commonFriends.add(getUserById(friendId2));
                 }
             }
         }

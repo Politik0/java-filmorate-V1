@@ -15,7 +15,7 @@ public interface FilmStorage {
 
     void removeFilmById(long id) throws DataExistException;
 
-    List<Film> findAllFilms();
+    List<Film> getAllFilms();
 
-    Film findFilmById(long id) throws DataExistException;
+    Film getFilmById(long id) throws DataExistException;
 }

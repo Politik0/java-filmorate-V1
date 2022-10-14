@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    FilmService filmService;
+    private final FilmService filmService;
 
     @Autowired
     public FilmController(FilmService filmService) {
@@ -34,13 +34,13 @@ public class FilmController {
     }
 
     @GetMapping
-    public List<Film> findAllFilms() {
-        return filmService.findAllFilms();
+    public List<Film> getAllFilms() {
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/{id}")
-    public Film findFilmById(@PathVariable long id) throws DataExistException {
-        return filmService.findFilmById(id);
+    public Film getFilmById(@PathVariable long id) throws DataExistException {
+        return filmService.getFilmById(id);
     }
 
     @DeleteMapping
@@ -64,8 +64,8 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> findTopFilms(@RequestParam(defaultValue = "10") int count) {
-        return filmService.findTopFilms(count);
+    public List<Film> getTopFilms(@RequestParam(defaultValue = "10") int count) {
+        return filmService.getTopFilms(count);
     }
 
 }

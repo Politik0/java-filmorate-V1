@@ -46,10 +46,10 @@ class FilmServiceTest {
 
     @Test
     void addLike() throws DataExistException {
-        assertEquals(0, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(0, filmService.getAllFilms().size(), "Количество фильмов неверное");
         filmStorage.addFilm(film);
         userStorage.addUser(user);
-        assertEquals(1, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(1, filmService.getAllFilms().size(), "Количество фильмов неверное");
         assertEquals(0, film.getLikesCount(), "Количество лайков неверное");
         filmService.addLike(film.getId(), user.getId());
         assertEquals(1, film.getLikesCount(), "Количество лайков неверное");
@@ -57,9 +57,9 @@ class FilmServiceTest {
 
     @Test
     void shouldThrowExceptionWhenAddDoubleLike() throws DataExistException {
-        assertEquals(0, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(0, filmService.getAllFilms().size(), "Количество фильмов неверное");
         addLike();
-        assertEquals(1, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(1, filmService.getAllFilms().size(), "Количество фильмов неверное");
         DataExistException e = assertThrows(
                 DataExistException.class,
                 () -> filmService.addLike(film.getId(), user.getId())
@@ -73,7 +73,7 @@ class FilmServiceTest {
     @Test
     void removeLike() throws DataExistException {
         addLike();
-        assertEquals(1, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(1, filmService.getAllFilms().size(), "Количество фильмов неверное");
         assertEquals(1, film.getLikesCount(), "Количество лайков неверное");
         filmService.removeLike(film.getId(), user.getId());
         assertEquals(0, film.getLikesCount(), "Количество лайков неверное");
@@ -84,7 +84,7 @@ class FilmServiceTest {
     void shouldThrowExceptionWhenNoLikesAndRemoveLike() throws DataExistException {
         filmStorage.addFilm(film);
         userStorage.addUser(user);
-        assertEquals(1, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(1, filmService.getAllFilms().size(), "Количество фильмов неверное");
         DataExistException e = assertThrows(
                 DataExistException.class,
                 () -> filmService.removeLike(film.getId(), user.getId())
@@ -97,7 +97,7 @@ class FilmServiceTest {
     @Test
     void findTopFilms() throws DataExistException {
         addLike();
-        assertEquals(1, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(1, filmService.getAllFilms().size(), "Количество фильмов неверное");
         Film film2 = Film.builder()
                 .id(0)
                 .name("FilName2")
@@ -106,12 +106,12 @@ class FilmServiceTest {
                 .duration(90)
                 .build();
         filmStorage.addFilm(film2);
-        assertEquals(2, filmService.findAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(2, filmService.getAllFilms().size(), "Количество фильмов неверное");
         assertEquals(1, film.getLikesCount(), "Количество лайков неверное");
         assertEquals(0, film2.getLikesCount(), "Количество лайков неверное");
-        assertEquals(2, filmService.findAllFilms().size(), "Количество фильмов неверное");
-        assertEquals(2,filmService.findTopFilms(10).size(), "Топ фильмов формируется не корректно");
-        assertEquals(1, filmService.findTopFilms(10).get(0).getId(), "Топ фильмов формируется не корректно");
+        assertEquals(2, filmService.getAllFilms().size(), "Количество фильмов неверное");
+        assertEquals(2,filmService.getTopFilms(10).size(), "Топ фильмов формируется не корректно");
+        assertEquals(1, filmService.getTopFilms(10).get(0).getId(), "Топ фильмов формируется не корректно");
     }
 
 

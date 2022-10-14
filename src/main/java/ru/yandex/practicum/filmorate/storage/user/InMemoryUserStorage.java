@@ -53,12 +53,12 @@ public class InMemoryUserStorage implements UserStorage {
         return users.get(user.getId());
     }
 
-    public List<User> findAllUsers() {
+    public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
 
     @Override
-    public User findUserById(long id) throws DataExistException {
+    public User getUserById(long id) throws DataExistException {
         if (!users.containsKey(id)) {
             log.debug("Попытка получить пользователя по несуществуемому ID.");
             throw new DataExistException("Пользователь с ID " + id + " не существует.");

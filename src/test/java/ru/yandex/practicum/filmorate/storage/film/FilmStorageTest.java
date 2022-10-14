@@ -18,7 +18,7 @@ abstract class FilmStorageTest<T extends FilmStorage> {
     @Test
     void addNewFilm() throws ValidationException, DataExistException {
         filmStorage.addFilm(film);
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
     }
 
     @Test
@@ -32,8 +32,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .duration(90)
                 .build();
         filmStorage.updateFilm(filmUpdated);
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals("Updated Name", filmStorage.findAllFilms().get(0).getName(), "Название после" +
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals("Updated Name", filmStorage.getAllFilms().get(0).getName(), "Название после" +
                 "обновления не верно" );
 
     }
@@ -46,7 +46,7 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 () -> filmStorage.addFilm(film)
         );
         assertEquals("Название не должно быть пустым.", exp.getMessage(), "Валидация по пустому имени не прошла");
-        assertEquals(0, filmStorage.findAllFilms().size());
+        assertEquals(0, filmStorage.getAllFilms().size());
     }
 
     @Test
@@ -58,13 +58,13 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Название не должно быть пустым.", exp.getMessage(), "Валидация по пустому " +
                 "имени не прошла");
-        assertEquals(0, filmStorage.findAllFilms().size());
+        assertEquals(0, filmStorage.getAllFilms().size());
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingWithEmptyFilmName() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("")
@@ -79,14 +79,14 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Название не должно быть пустым.", exp.getMessage(), "Валидация по пустому " +
                 "имени не прошла");
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         assertEquals(film.getName(), "FilName", "Название фильма после обновления неверное");
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingWithBlankFilmName() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name(" ")
@@ -100,8 +100,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 () -> filmStorage.updateFilm(filmUpdated)
         );
         assertEquals("Название не должно быть пустым.", exp.getMessage(), "Валидация по пустому имени не прошла");
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals(filmStorage.findAllFilms().get(0).getName(), "FilName", "Название фильма после обновления неверное");
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals(filmStorage.getAllFilms().get(0).getName(), "FilName", "Название фильма после обновления неверное");
     }
 
     @Test
@@ -115,7 +115,7 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Максимальная длина описания — 200 символов.", exp.getMessage(), "Валидация " +
                 "по описанию не прошла");
-        assertEquals(0, filmStorage.findAllFilms().size());
+        assertEquals(0, filmStorage.getAllFilms().size());
     }
 
     @Test
@@ -124,8 +124,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 "разыскать господина Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. о Куглов, " +
                 "который за время «сво");
         filmStorage.addFilm(film);
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals(filmStorage.findAllFilms().get(0).getDescription().length(), 200, "Размер описания" +
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals(filmStorage.getAllFilms().get(0).getDescription().length(), 200, "Размер описания" +
                 "после обновления не корректный");
     }
 
@@ -141,13 +141,13 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Максимальная длина описания — 200 символов.", exp.getMessage(), "Валидация " +
                 "по описанию не прошла");
-        assertEquals(0, filmStorage.findAllFilms().size());
+        assertEquals(0, filmStorage.getAllFilms().size());
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndDescriptionIsMoreThan200() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilName")
@@ -163,8 +163,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Максимальная длина описания — 200 символов.", exp.getMessage(), "Валидация " +
                 "по описанию не прошла");
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals("Description1", filmStorage.findAllFilms().get(0).getDescription(), "Описание " +
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals("Description1", filmStorage.getAllFilms().get(0).getDescription(), "Описание " +
                 "после обновления не корректное");
     }
 
@@ -182,15 +182,15 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .build();
 
         filmStorage.updateFilm(filmUpdated);
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals(filmStorage.findAllFilms().get(0).getDescription().length(), 200, "Размер описания" +
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals(filmStorage.getAllFilms().get(0).getDescription().length(), 200, "Размер описания" +
                 "после обновления не корректный");
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndDescriptionIs201() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilName")
@@ -208,8 +208,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Максимальная длина описания — 200 символов.", exp.getMessage(), "Валидация " +
                 "по описанию не прошла");
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals("Description1", filmStorage.findAllFilms().get(0).getDescription(), "Описание " +
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals("Description1", filmStorage.getAllFilms().get(0).getDescription(), "Описание " +
                 "после обновления не корректное");
     }
 
@@ -217,13 +217,13 @@ abstract class FilmStorageTest<T extends FilmStorage> {
     void shouldAddFilmWithReleaseDate28121895() throws ValidationException, DataExistException {
         film.setReleaseDate(LocalDate.of(1895, 12, 28));
         filmStorage.addFilm(film);
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
     }
 
     @Test
     void shouldUpdateFilmWithReleaseDate28121895() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilName")
@@ -233,9 +233,9 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .build();
 
         filmStorage.updateFilm(filmUpdated);
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         assertEquals(LocalDate.of(1895, 12, 28),
-                filmStorage.findAllFilms().get(0).getReleaseDate(), "Дата релиза после обновления" +
+                filmStorage.getAllFilms().get(0).getReleaseDate(), "Дата релиза после обновления" +
                         "не корректная.");
     }
 
@@ -248,13 +248,13 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Дата релиза не может быть раньше 28 декабря 1895 года", exp.getMessage(),
                 "Валидация по дате релиза не прошла");
-        assertEquals(0, filmStorage.findAllFilms().size());
+        assertEquals(0, filmStorage.getAllFilms().size());
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndReleaseDateIsBefore28121895() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilName")
@@ -268,22 +268,22 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Дата релиза не может быть раньше 28 декабря 1895 года", exp.getMessage(),
                 "Валидация по дате релиза не прошла");
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         assertEquals(LocalDate.of(2000, 12,12),
-                filmStorage.findAllFilms().get(0).getReleaseDate(), "Дата релиза после обновления не корректная");
+                filmStorage.getAllFilms().get(0).getReleaseDate(), "Дата релиза после обновления не корректная");
     }
 
     @Test
     void shouldAddFilmWhenDurationIs1() throws ValidationException, DataExistException {
         film.setDuration(1);
         filmStorage.addFilm(film);
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
     }
 
     @Test
     void shouldUpdateFilmWhenDurationIs1() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilName")
@@ -293,8 +293,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .build();
 
         filmStorage.updateFilm(filmUpdated);
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals(1, filmStorage.findAllFilms().get(0).getDuration(), "Продолжительность после " +
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().get(0).getDuration(), "Продолжительность после " +
                 "обновления не корректная.");
     }
 
@@ -307,13 +307,13 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Продолжительность фильма должна быть положительной.", exp.getMessage(),
                 "Валидация по продолжительности не прошла");
-        assertEquals(0, filmStorage.findAllFilms().size());
+        assertEquals(0, filmStorage.getAllFilms().size());
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndDurationIs0() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilName")
@@ -327,8 +327,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Продолжительность фильма должна быть положительной.", exp.getMessage(),
                 "Валидация по продолжительности не прошла");
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals(90, filmStorage.findAllFilms().get(0).getDuration(),
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals(90, filmStorage.getAllFilms().get(0).getDuration(),
                 "Продолжительность после обновления не корректная");
     }
 
@@ -341,13 +341,13 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Продолжительность фильма должна быть положительной.", exp.getMessage(),
                 "Валидация по продолжительности не прошла");
-        assertEquals(0, filmStorage.findAllFilms().size());
+        assertEquals(0, filmStorage.getAllFilms().size());
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndDurationIsNegative() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilName")
@@ -361,21 +361,21 @@ abstract class FilmStorageTest<T extends FilmStorage> {
         );
         assertEquals("Продолжительность фильма должна быть положительной.", exp.getMessage(),
                 "Валидация по продолжительности не прошла");
-        assertEquals(1, filmStorage.findAllFilms().size());
-        assertEquals(90, filmStorage.findAllFilms().get(0).getDuration(),
+        assertEquals(1, filmStorage.getAllFilms().size());
+        assertEquals(90, filmStorage.getAllFilms().get(0).getDuration(),
                 "Продолжительность после обновления не корректная");
     }
 
     @Test
     void shouldThrowExceptionWhenEmptyDescription() {
         film.setDescription("");
-        assertEquals(0, filmStorage.findAllFilms().size(), "Валидация пропустила пустую строку");
+        assertEquals(0, filmStorage.getAllFilms().size(), "Валидация пропустила пустую строку");
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndEmptyDescription() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilmName")
@@ -384,20 +384,20 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .duration(90)
                 .build();
         filmStorage.updateFilm(filmUpdated);
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         assertEquals(film.getDescription(), "Description1", "Название фильма после обновления неверное");
     }
 
     @Test
     void shouldThrowExceptionWhenBlankDescription() {
         film.setDescription(" ");
-        assertEquals(0, filmStorage.findAllFilms().size(), "Валидация пропустила пустую строку");
+        assertEquals(0, filmStorage.getAllFilms().size(), "Валидация пропустила пустую строку");
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndBlankDescription() throws ValidationException, DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilmName")
@@ -406,20 +406,20 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .duration(90)
                 .build();
         filmStorage.updateFilm(filmUpdated);
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         assertEquals(film.getDescription(), "Description1", "Название фильма после обновления неверное");
     }
 
     @Test
     void shouldThrowExceptionWhenNullRelease() {
         film.setReleaseDate(null);
-        assertEquals(0, filmStorage.findAllFilms().size(), "Валидация пропустила пустую строку");
+        assertEquals(0, filmStorage.getAllFilms().size(), "Валидация пропустила пустую строку");
     }
 
     @Test
     void shouldThrowExceptionWhenUpdatingAndNullRelease() throws DataExistException {
         addNewFilm();
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         Film filmUpdated = Film.builder()
                 .id(film.getId())
                 .name("FilmName")
@@ -428,7 +428,7 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .duration(90)
                 .build();
         filmStorage.updateFilm(filmUpdated);
-        assertEquals(1, filmStorage.findAllFilms().size());
+        assertEquals(1, filmStorage.getAllFilms().size());
         assertEquals(film.getReleaseDate(), LocalDate.of(2000, 12,12), "Название фильма после обновления неверное");
     }
 
@@ -443,8 +443,8 @@ abstract class FilmStorageTest<T extends FilmStorage> {
                 .duration(90)
                 .build();
         filmStorage.addFilm(film2);
-        assertEquals(2, filmStorage.findAllFilms().size(), "Количество фильмов неверное.");
-        assertEquals(1, filmStorage.findFilmById(1).getId(), "Возвращается не верный фильм.");
+        assertEquals(2, filmStorage.getAllFilms().size(), "Количество фильмов неверное.");
+        assertEquals(1, filmStorage.getFilmById(1).getId(), "Возвращается не верный фильм.");
     }
 
 }

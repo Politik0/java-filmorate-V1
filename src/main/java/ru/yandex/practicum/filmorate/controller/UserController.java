@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -33,13 +33,13 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAllUsers() {
-        return userService.findAllUsers();
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public User findUserById(@PathVariable(required = false) long id) throws DataExistException {
-        return userService.findUserById(id);
+    public User getUserById(@PathVariable(required = false) long id) throws DataExistException {
+        return userService.getUserById(id);
     }
 
     @DeleteMapping
@@ -63,13 +63,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> findAllFriends(@PathVariable long id) {
-        return userService.findAllFriends(id);
+    public List<User> getAllFriends(@PathVariable long id) {
+        return userService.getAllFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> findCommonFriends(@PathVariable long id, @PathVariable long otherId) throws DataExistException {
-        return userService.findCommonFriends(id, otherId);
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) throws DataExistException {
+        return userService.getCommonFriends(id, otherId);
     }
 
 }

@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class FilmService {
-    FilmStorage filmStorage;
-    UserStorage userStorage;
+    private final FilmStorage filmStorage;
+    private final UserStorage userStorage;
 
 
     @Autowired
@@ -43,8 +43,8 @@ public class FilmService {
     }
 
     public void addLike(Long filmId, Long userId) throws DataExistException {
-        Film film = findFilmById(filmId);
-        User user = userStorage.findUserById(userId);
+        Film film = getFilmById(filmId);
+        User user = userStorage.getUserById(userId);
         if (film.getLikes() != null) {
             if (film.getLikes().contains(user.getId())) {
                 log.debug("Попытка поставить второй лайк пользователем c ID " + user.getId() + " фильму " +
@@ -59,8 +59,8 @@ public class FilmService {
     }
 
     public void removeLike(Long filmId, Long userId) throws DataExistException {
-        Film film = findFilmById(filmId);
-        User user = userStorage.findUserById(userId);
+        Film film = getFilmById(filmId);
+        User user = userStorage.getUserById(userId);
         if (film.getLikes() != null) {
             if (!film.getLikes().contains(user.getId())) {
                 log.debug("Попытка удалить лайк пользователем c ID " + user.getId() + ", который еще не ставил лайк фильму " +
@@ -74,18 +74,18 @@ public class FilmService {
                 + ". Количество лайков: " + film.getLikes().size());
     }
 
-    public List<Film> findTopFilms(int count) {
-        return filmStorage.findAllFilms().stream()
+    public List<Film> getTopFilms(int count) {
+        return filmStorage.getAllFilms().stream()
                 .sorted((x1, x2) ->  x2.getLikesCount() - x1.getLikesCount())
                 .limit(count)
                 .collect(Collectors.toList());
     }
 
-    public List<Film> findAllFilms() {
-        return filmStorage.findAllFilms();
+    public List<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
     }
 
-    public Film findFilmById(long id) throws DataExistException {
-        return filmStorage.findFilmById(id);
+    public Film getFilmById(long id) throws DataExistException {
+        return filmStorage.getFilmById(id);
     }
 }

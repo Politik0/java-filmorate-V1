@@ -11,9 +11,9 @@ public interface UserStorage {
 
     User updateUser(User user) throws DataExistException, ValidationException;
 
-    List<User> findAllUsers();
+    List<User> getAllUsers();
 
-    User findUserById(long id) throws DataExistException;
+    User getUserById(long id) throws DataExistException;
 
     void removeAllUsers();
 

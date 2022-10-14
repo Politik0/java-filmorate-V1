@@ -70,12 +70,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> findAllFilms() {
+    public List<Film> getAllFilms() {
         return new ArrayList<>(films.values());
     }
 
     @Override
-    public Film findFilmById(long id) throws DataExistException {
+    public Film getFilmById(long id) throws DataExistException {
         if (!films.containsKey(id)) {
             log.debug("Попытка получить фильм по несуществуемому ID.");
             throw new DataExistException("Фильма с ID " + id + " не существует.");

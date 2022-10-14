@@ -98,8 +98,8 @@ class UserServiceTest {
                 .build();
         userService.addUser(commonFriend);
         userService.addFriend(user.getId(), commonFriend.getId());
-        assertEquals(2, userService.findAllFriends(user.getId()).size(), "Количество друзей неверное.");
-        assertTrue(userService.findAllFriends(user.getId()).contains(friend), "Список друзей не содержит друга");
+        assertEquals(2, userService.getAllFriends(user.getId()).size(), "Количество друзей неверное.");
+        assertTrue(userService.getAllFriends(user.getId()).contains(friend), "Список друзей не содержит друга");
 
     }
 
@@ -118,7 +118,7 @@ class UserServiceTest {
         userService.addFriend(friend.getId(), commonFriend.getId());
         assertEquals(2, user.getFriends().size(), "Количество друзей неверное.");
         assertEquals(2, friend.getFriends().size(), "Количество друзей неверное.");
-        assertEquals(3, userService.findCommonFriends(user.getId(), friend.getId()).get(0).getId(),
+        assertEquals(3, userService.getCommonFriends(user.getId(), friend.getId()).get(0).getId(),
                 "Общий друг возвращается некорректно");
     }
 }
