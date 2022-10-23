@@ -42,5 +42,4 @@ HAVING COUNT(user_id) > 1
 SELECT*
 FROM film
 WHERE rating_id=1 --G — у фильма нет возрастных ограничений
-
 ```
