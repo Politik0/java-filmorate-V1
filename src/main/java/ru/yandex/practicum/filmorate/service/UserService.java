@@ -29,11 +29,15 @@ public class UserService {
         if(!validate(user)) {
             throw new ValidationException("Валидация не пройдена");
         }
-        return userStorage.addUser(user);
+
+        return userStorage.addUser(validateName(user));
     }
 
     public User updateUser(User user) throws DataExistException, ValidationException {
-        return userStorage.updateUser(user);
+        if(!validate(user)) {
+            throw new ValidationException("Валидация не пройдена");
+        }
+        return userStorage.updateUser(validateName(user));
     }
 
     public List<User> getAllUsers() {
@@ -82,10 +86,14 @@ public class UserService {
             log.debug("Попытка задать дату рождения будущей датой");
             throw new ValidationException("Дата рождения не может быть в будущем.");
         }
+        return true;
+    }
+
+    private User validateName(User user) {
         if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
             log.debug("Имя пользователя пустое, для имени использовался логин");
             user.setName(user.getLogin());
         }
-        return true;
+        return user;
     }
 }
