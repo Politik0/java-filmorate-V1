@@ -1,4 +1,4 @@
-# java-filmorate
+
 # Filmorate data base map
 ![This is an image](https://github.com/Politik0/java-filmorate/blob/main/filmorateDB.png)
 
