@@ -2,12 +2,15 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +21,14 @@ public class UserService {
     private final UserStorage userStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+        public UserService(@Qualifier("userDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
     public User addUser(User user) throws DataExistException, ValidationException {
+        if(!validate(user)) {
+            throw new ValidationException("Валидация не пройдена");
+        }
         return userStorage.addUser(user);
     }
 
@@ -35,11 +41,14 @@ public class UserService {
     }
 
     public User getUserById(long id) throws DataExistException {
-        return userStorage.getUserById(id);
-    }
-
-    public void removeAllUsers() {
-        userStorage.removeAllUsers();
+        log.info("Поиск пользователя с id {} ", id);
+        User user = userStorage.getUserById(id);
+        if (user == null) {
+            log.info("Пользователь с id {} не найден ", id);
+            throw new DataExistException("Такой пользователь не существует.");
+        }
+        log.info("Найден пользователь с id {} ", id);
+        return user;
     }
 
     public void removeUserById(long id) throws DataExistException {
@@ -47,61 +56,36 @@ public class UserService {
     }
 
     public void addFriend(long userId, long friendId) throws DataExistException {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        if (user.getFriends() != null) {
-            if (user.getFriends().contains(friend.getId())) {
-                log.debug("Попытка повторно добавить друга c ID " + friend.getId() + " в друзья к пользователю " +
-                        "с ID " + user.getId() + ".");
-                throw new DataExistException("у пользователя с ID: " + user.getId() + " уже есть друг с ID: "
-                        + friend.getId());
-            }
-        }
-        user.addFriend(friendId);
-        log.debug("Пользователь с ID: " + user.getId() + " добавил в друзья друга с ID: " + friend.getId());
-        friend.addFriend(userId);
-        log.debug("Пользователь с ID: " + user.getId() + " добавлен в друзья у друга с ID: " + friend.getId());
-
+        userStorage.addFriend(userId, friendId);
     }
 
     public void removeFriend(long userId, long friendId) throws DataExistException {
-        User user = userStorage.getUserById(userId);
-        User friend = userStorage.getUserById(friendId);
-        if (user.getFriends() != null) {
-            if (!user.getFriends().contains(friend.getId())) {
-                log.debug("Попытка удалить друга c ID " + friend.getId() + ", который не был добавлен в друзья " +
-                        "к пользователю с ID " + user.getId() + ".");
-                throw new DataExistException("Пользователь с ID: " + user.getId() + " еще не добавил друга с ID: "
-                        + friend.getId());
-            }
-        }
-        user.removeFriend(friendId);
-        log.debug("Пользователь с ID: " + user.getId() + " удалил из друзей друга с ID: " + friend.getId());
-        friend.removeFriend(userId);
-        log.debug("Пользователь с ID: " + user.getId() + " удален из друзей у друга с ID: " + friend.getId());
+       userStorage.removeFriend(userId, friendId);
     }
 
-    public List<User> getAllFriends(long id) {
-        return getAllUsers().stream()
-                .filter(x -> {
-                    try {
-                        return getUserById(id).getFriends().contains(x.getId());
-                    } catch (DataExistException e) {
-                        throw new RuntimeException(e.getMessage());
-                    }
-                })
-                .collect(Collectors.toList());
+    public List<User> getAllFriends(long id) throws DataExistException {
+        return userStorage.getAllFriends(id);
     }
 
     public List<User> getCommonFriends(long id, long otherId) throws DataExistException {
-        List<User> commonFriends = new ArrayList<>();
-        for (long friendId : getUserById(id).getFriends()) {
-            for (long friendId2 : getUserById(otherId).getFriends()) {
-                if (friendId == friendId2) {
-                    commonFriends.add(getUserById(friendId2));
-                }
-            }
+        return userStorage.getCommonFriends(id, otherId);
+    }
+
+    private boolean validate(User user) throws ValidationException {
+        if (user.getEmail() == null || !user.getEmail().contains("@") || user.getEmail().isBlank()) {
+            log.debug("Эл.почта пустая или не содержит @");
+            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
+        } else if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
+            log.debug("Логин пустой или содержит пробелы");
+            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
+        } else if (user.getBirthday().isAfter(LocalDate.now())) {
+            log.debug("Попытка задать дату рождения будущей датой");
+            throw new ValidationException("Дата рождения не может быть в будущем.");
         }
-        return commonFriends;
+        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
+            log.debug("Имя пользователя пустое, для имени использовался логин");
+            user.setName(user.getLogin());
+        }
+        return true;
     }
 }

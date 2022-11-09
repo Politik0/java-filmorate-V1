@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -21,16 +22,12 @@ public class InMemoryUserStorage implements UserStorage {
             log.debug("Попытка создать юзера, который уже существует");
             throw new DataExistException("Такой пользователь уже существует.");
         } else {
-            if (validate(user)){
-                user.setFriends(new TreeSet<>());
-                user.setId(id);
-                id++;
-                users.put(user.getId(), user);
-                log.debug("Новый пользователь {} добавлен. Всего их: " + users.size(), user.getLogin());
-                log.debug("Пользователь " + user);
-            } else {
-                throw new ValidationException("Валидация не пройдена");
-            }
+            user.setFriends(new TreeSet<>());
+            user.setId(id);
+            id++;
+            users.put(user.getId(), user);
+            log.debug("Новый пользователь {} добавлен. Всего их: " + users.size(), user.getLogin());
+            log.debug("Пользователь " + user);
         }
         return users.get(user.getId());
     }
@@ -41,18 +38,14 @@ public class InMemoryUserStorage implements UserStorage {
             log.debug("Попытка обновить несуществующего пользователя");
             throw new DataExistException("Такой пользователь не существует.");
         } else {
-            if(validate(user)) {
-                user.setFriends(users.get(user.getId()).getFriends());
-                users.put(user.getId(), user);
-                log.debug("Данные пользователя {} обновлены", user.getLogin());
-                log.debug("Пользователь " + user);
-            } else {
-                throw new ValidationException("Валидация не пройдена");
-            }
+            user.setFriends(users.get(user.getId()).getFriends());
+            users.put(user.getId(), user);
+            log.debug("Данные пользователя {} обновлены", user.getLogin());
+            log.debug("Пользователь " + user);
         }
         return users.get(user.getId());
     }
-
+    @Override
     public List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
@@ -67,12 +60,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void removeAllUsers() {
-        users.clear();
-        log.debug("Все пользователи удалены.");
-    }
-
-    @Override
     public void removeUserById(long id) throws DataExistException {
         if (!users.containsKey(id)) {
             log.debug("Попытка удалить пользователя с несуществуеющим ID.");
@@ -81,21 +68,65 @@ public class InMemoryUserStorage implements UserStorage {
         users.remove(id);
     }
 
-    private boolean validate(User user) throws ValidationException {
-        if (user.getEmail() == null || !user.getEmail().contains("@") || user.getEmail().isBlank()) {
-            log.debug("Эл.почта пустая или не содержит @");
-            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @");
-        } else if (user.getLogin() == null || user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
-            log.debug("Логин пустой или содержит пробелы");
-            throw new ValidationException("Логин не может быть пустым и содержать пробелы");
-        } else if (user.getBirthday().isAfter(LocalDate.now())) {
-            log.debug("Попытка задать дату рождения будущей датой");
-            throw new ValidationException("Дата рождения не может быть в будущем.");
+    @Override
+    public void addFriend(long userId, long friendId) throws DataExistException {
+        User user = users.get(userId);
+        User friend = users.get(friendId);
+        if (user.getFriends() != null) {
+            if (user.getFriends().contains(friend.getId())) {
+                log.debug("Попытка повторно добавить друга c ID " + friend.getId() + " в друзья к пользователю " +
+                        "с ID " + user.getId() + ".");
+                throw new DataExistException("у пользователя с ID: " + user.getId() + " уже есть друг с ID: "
+                        + friend.getId());
+            }
         }
-        if (user.getName() == null || user.getName().isEmpty() || user.getName().isBlank()) {
-            log.debug("Имя пользователя пустое, для имени использовался логин");
-            user.setName(user.getLogin());
+        user.addFriend(friendId);
+        log.debug("Пользователь с ID: " + user.getId() + " добавил в друзья друга с ID: " + friend.getId());
+        friend.addFriend(userId);
+        log.debug("Пользователь с ID: " + user.getId() + " добавлен в друзья у друга с ID: " + friend.getId());
+    }
+
+    @Override
+    public List<User> getAllFriends(long id) {
+        return getAllUsers().stream()
+                .filter(x -> {
+                    try {
+                        return getUserById(id).getFriends().contains(x.getId());
+                    } catch (DataExistException e) {
+                        throw new RuntimeException(e.getMessage());
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getCommonFriends(long id, long otherId) throws DataExistException {
+        List<User> commonFriends = new ArrayList<>();
+        for (long friendId : getUserById(id).getFriends()) {
+            for (long friendId2 : getUserById(otherId).getFriends()) {
+                if (friendId == friendId2) {
+                    commonFriends.add(getUserById(friendId2));
+                }
+            }
         }
-        return true;
+        return commonFriends;
+    }
+
+    @Override
+    public void removeFriend(long userId, long friendId) throws DataExistException {
+        User user = users.get(userId);
+        User friend = users.get(friendId);
+        if (user.getFriends() != null) {
+            if (!user.getFriends().contains(friend.getId())) {
+                log.debug("Попытка удалить друга c ID " + friend.getId() + ", который не был добавлен в друзья " +
+                        "к пользователю с ID " + user.getId() + ".");
+                throw new DataExistException("Пользователь с ID: " + user.getId() + " еще не добавил друга с ID: "
+                        + friend.getId());
+            }
+        }
+        user.removeFriend(friendId);
+        log.debug("Пользователь с ID: " + user.getId() + " удалил из друзей друга с ID: " + friend.getId());
+        friend.removeFriend(userId);
+        log.debug("Пользователь с ID: " + user.getId() + " удален из друзей у друга с ID: " + friend.getId());
     }
 }

@@ -43,11 +43,6 @@ public class FilmController {
         return filmService.getFilmById(id);
     }
 
-    @DeleteMapping
-    public void removeAllFilms() {
-        filmService.removeAllFilms();
-    }
-
     @DeleteMapping("/{id}")
     public void removeFilmById(@PathVariable long id) throws DataExistException {
         filmService.removeFilmById(id);

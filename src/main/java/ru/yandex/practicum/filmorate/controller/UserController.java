@@ -42,11 +42,6 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @DeleteMapping
-    public void removeAllUsers() {
-        userService.removeAllUsers();
-    }
-
     @DeleteMapping("/{id}")
     public void removeUserById(@PathVariable long id) throws DataExistException {
         userService.removeUserById(id);
@@ -63,7 +58,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getAllFriends(@PathVariable long id) {
+    public List<User> getAllFriends(@PathVariable long id) throws DataExistException {
         return userService.getAllFriends(id);
     }
 

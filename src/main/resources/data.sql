@@ -1,0 +1,27 @@
+/*delete from FILM_GENRE;
+delete from FILM_USER;
+DELETE from FRIEND_TABLE;
+DELETE from USER_TABLE;
+DELETE from FILM_TABLE;
+
+
+ALTER TABLE USER_TABLE ALTER COLUMN USER_ID RESTART WITH 1;
+ALTER TABLE FILM_TABLE ALTER COLUMN FILM_ID RESTART WITH 1;
+
+delete from MPA;
+delete from GENRE;
+ALTER TABLE MPA alter column MPA_ID restart with 1;
+alter table GENRE alter column GENRE_ID restart with 1;*/
+
+MERGE INTO mpa KEY (MPA_ID) VALUES (1, 'G');
+MERGE INTO mpa KEY (MPA_ID) VALUES (2, 'PG');
+MERGE INTO mpa KEY (MPA_ID) VALUES (3, 'PG-13');
+MERGE INTO mpa KEY (MPA_ID) VALUES (4, 'R');
+MERGE INTO mpa KEY (MPA_ID) VALUES (5, 'NC-17');
+
+MERGE INTO genre KEY (GENRE_ID) VALUES (1, 'Комедия');
+MERGE INTO genre KEY (GENRE_ID) VALUES (2, 'Драма');
+MERGE INTO genre KEY (GENRE_ID) VALUES (3, 'Мультфильм');
+MERGE INTO genre KEY (GENRE_ID) VALUES (4, 'Триллер');
+MERGE INTO genre KEY (GENRE_ID) VALUES (5, 'Документальный');
+MERGE INTO genre KEY (GENRE_ID) VALUES (6, 'Боевик');

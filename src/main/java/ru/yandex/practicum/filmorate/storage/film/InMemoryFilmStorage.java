@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DataExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Component
@@ -21,16 +21,13 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.debug("Попытка создать дублирующий фильм");
             throw new DataExistException("Такой фильм уже есть.");
         } else {
-            if (validate(film)) {
-                film.setId(id);
-                film.setLikes(new TreeSet<>());
-                id++;
-                films.put(film.getId(), film);
-                log.debug("Фильм {} добавлен. Всего их: " + films.size(), film.getName());
-                log.debug("Фильм: " + film);
-            } else {
-                throw new ValidationException("Валидация не пройдена");
-            }
+            film.setId(id);
+            film.setLikes(new TreeSet<>());
+            id++;
+            films.put(film.getId(), film);
+            log.debug("Фильм {} добавлен. Всего их: " + films.size(), film.getName());
+            log.debug("Фильм: " + film);
+
         }
         return films.get(film.getId());
     }
@@ -41,22 +38,12 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.debug("Попытка обновить несуществующий фильм");
             throw new DataExistException("Такой фильм не существует.");
         } else {
-            if (validate(film)) {
-                film.setLikes(films.get(film.getId()).getLikes());
-                films.put(film.getId(), film);
-                log.debug("Фильм c ID {} обновлен", film.getId());
-                log.debug("Фильм " + film);
-            } else {
-                throw new ValidationException("Валидация не пройдена");
-            }
+            film.setLikes(films.get(film.getId()).getLikes());
+            films.put(film.getId(), film);
+            log.debug("Фильм c ID {} обновлен", film.getId());
+            log.debug("Фильм " + film);
         }
         return films.get(film.getId());
-    }
-
-    @Override
-    public void removeAllFilms() {
-        films.clear();
-        log.debug("Все фильмы удалены.");
     }
 
     @Override
@@ -83,25 +70,35 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films.get(id);
     }
 
-    private boolean validate(Film film) throws ValidationException {
-        if (film.getName() == null || film.getName().isEmpty() || film.getName().isBlank()) {
-            log.debug("Название фильма пустое");
-            throw new ValidationException("Название не должно быть пустым.");
-        }
-        if (film.getDescription().length() > 200) {
-            log.debug("Длина описания больше 200 символов.");
-            throw new ValidationException("Максимальная длина описания — 200 символов.");
-        }
-        if (film.getReleaseDate() != null) {
-            if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-                log.debug("Дата релиза раньше 28/12/1895");
-                throw new ValidationException("Дата релиза не может быть раньше 28 декабря 1895 года");
+    @Override
+    public void addLike(Long filmId, Long userId) throws DataExistException {
+        Film film = getFilmById(filmId);
+        if (film.getLikes() != null) {
+            if (film.getLikes().contains(userId)) {
+                log.debug("Попытка поставить второй лайк пользователем c ID " + userId + " фильму " +
+                        "с ID " + film.getId() + ".");
+                throw new DataExistException("Пользователь с ID: " + userId + " уже ставил лайк фильму с ID: "
+                        + film.getId());
             }
         }
-        if (film.getDuration() <= 0) {
-            log.debug("Продолжительность фильма меньше или равна нулю");
-            throw new ValidationException("Продолжительность фильма должна быть положительной.");
+        film.addLike(userId);
+        log.debug("Пользователь с ID: " + userId + " поставил like фильму с ID: " + film.getId()
+                + ". Количество лайков: " + film.getLikes().size());
+    }
+
+    @Override
+    public void removeLike(Long filmId, Long userId) throws DataExistException {
+        Film film = getFilmById(filmId);
+        if (film.getLikes() != null) {
+            if (!film.getLikes().contains(userId)) {
+                log.debug("Попытка удалить лайк пользователем c ID " + userId + ", который еще не ставил лайк фильму " +
+                        "с ID " + film.getId() + ".");
+                throw new DataExistException("Пользователь с ID: " + userId + " еще не ставил лайк фильму с ID: "
+                        + film.getId());
+            }
         }
-        return true;
+        film.removeLike(userId);
+        log.debug("Пользователь с ID: " + userId + " убрал свой like фильму с ID: " + filmId
+                + ". Количество лайков: " + film.getLikes().size());
     }
 }
