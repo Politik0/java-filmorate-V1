@@ -23,12 +23,14 @@ public class GenreController {
     }
 
     @GetMapping
-    public List<Genre> getAllMpa() {
+    public List<Genre> getAllGenres() {
+        log.debug("Получен запрос на получение списка всех жанров.");
         return genreService.getAllGenres();
     }
 
     @GetMapping("/{id}")
-    public Genre getMpaById(@PathVariable int id) throws DataExistException {
+    public Genre getGenreById(@PathVariable int id) throws DataExistException {
+        log.debug("Получен запрос на получение жанра с ID {}.", id);
         return genreService.getGenreById(id);
     }
 }

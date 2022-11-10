@@ -16,6 +16,8 @@ public interface FilmStorage {
     List<Film> getAllFilms();
 
     Film getFilmById(long id) throws DataExistException;
+
     void addLike(Long filmId, Long userId) throws DataExistException;
+
     void removeLike(Long filmId, Long userId) throws DataExistException;
 }

@@ -61,7 +61,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(long id) throws DataExistException {
+    public User getUserById(long id) {
         String sqlQuery = "select* from user_table where user_id = ?";
         SqlRowSet userRow = jdbcTemplate.queryForRowSet(sqlQuery, id);
         if (userRow.next()) {

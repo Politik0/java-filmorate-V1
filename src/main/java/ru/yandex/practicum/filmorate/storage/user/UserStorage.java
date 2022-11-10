@@ -17,8 +17,12 @@ public interface UserStorage {
     User getUserById(long id) throws DataExistException;
 
     void removeUserById(long id) throws DataExistException;
+
     void addFriend(long userId, long friendId) throws DataExistException;
+
     List<User> getAllFriends(long id) throws DataExistException;
+
     List<User> getCommonFriends(long id, long otherId) throws DataExistException;
+
     void removeFriend(long userId, long friendId) throws DataExistException;
 }

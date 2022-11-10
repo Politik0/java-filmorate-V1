@@ -25,15 +25,6 @@ public class Film {
     @Builder.Default
     private Set<Long> likes = new TreeSet<>();
 
-/*    public Film(long film_id, String title, String description, LocalDate releaseDate, int duration, Mpa mpa) {
-        this.film_id = film_id;
-        this.title = title;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-        this.mpa = mpa;
-    }*/
-
     public void addLike(long id) {
         likes.add(id);
     }

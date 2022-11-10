@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 abstract class FilmStorageTest<T extends FilmStorage> {
     protected T filmStorage;
     protected FilmService filmService;
-    protected T userStorage;
     protected Film film;
 
     @Test

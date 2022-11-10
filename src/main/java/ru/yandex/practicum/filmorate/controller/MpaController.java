@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.MpaService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/mpa")
@@ -27,11 +26,13 @@ public class MpaController {
 
     @GetMapping
     public List<Mpa> getAllMpa() {
+        log.debug("Получен запрос на получение списка рейтинга mpa.");
         return mpaService.getAllMpa();
     }
 
     @GetMapping("/{id}")
     public Mpa getMpaById(@PathVariable int id) throws DataExistException {
+        log.debug("Получен запрос на получение рейтинга mpa с ID {}.", id);
         return mpaService.getMpaById(id);
     }
 }

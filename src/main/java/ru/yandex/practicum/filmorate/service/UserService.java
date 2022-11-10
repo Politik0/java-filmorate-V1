@@ -7,13 +7,10 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataExistException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -26,7 +23,7 @@ public class UserService {
     }
 
     public User addUser(User user) throws DataExistException, ValidationException {
-        if(!validate(user)) {
+        if(validate(user)) {
             throw new ValidationException("Валидация не пройдена");
         }
 
@@ -34,7 +31,7 @@ public class UserService {
     }
 
     public User updateUser(User user) throws DataExistException, ValidationException {
-        if(!validate(user)) {
+        if(validate(user)) {
             throw new ValidationException("Валидация не пройдена");
         }
         return userStorage.updateUser(validateName(user));
@@ -86,7 +83,7 @@ public class UserService {
             log.debug("Попытка задать дату рождения будущей датой");
             throw new ValidationException("Дата рождения не может быть в будущем.");
         }
-        return true;
+        return false;
     }
 
     private User validateName(User user) {

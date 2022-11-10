@@ -62,18 +62,15 @@ public class FilmDbStorage implements FilmStorage {
         String sqlQuery = "update FILM_TABLE set name = ?, description = ?, release_date = ?, film_duration = ?, " +
                 "mpa_id = ? where FILM_ID = ?";
         jdbcTemplate.update(sqlQuery, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
-                film.getMpa().getId(),film.getId());
+                film.getMpa().getId(), film.getId());
 
         if (film.getGenres() != null) {
-           jdbcTemplate.update("delete from FILM_GENRE where FILM_ID = ?", film.getId());
+            jdbcTemplate.update("delete from FILM_GENRE where FILM_ID = ?", film.getId());
             for (Genre genre : film.getGenres()) {
                 jdbcTemplate.update("insert into FILM_GENRE(FILM_ID, GENRE_ID)" +
                                 "values (?, ?)",
                         film.getId(),
                         genre.getId());
-                /*jdbcTemplate.update("update FILM_GENRE set GENRE_ID = ? where FILM_ID = ?",
-                        genre.getId(),
-                        film.getId());*/
             }
         }
         film.setGenres(genreStorage.getGenresByFilmId(film.getId()));
@@ -109,7 +106,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public Film getFilmById(long id) throws DataExistException {
+    public Film getFilmById(long id) {
         String sqlQuery = "select* from film_table where film_id = ?";
         SqlRowSet userRow = jdbcTemplate.queryForRowSet(sqlQuery, id);
         if (userRow.next()) {
@@ -129,7 +126,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void addLike(Long filmId, Long userId) throws DataExistException {
+    public void addLike(Long filmId, Long userId) {
         String sqlQuery = "insert into film_user (FILM_ID, USER_ID) values (?, ?)";
         int c = jdbcTemplate.update(sqlQuery, filmId, userId);
         if (c > 0) {
@@ -140,7 +137,7 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     @Override
-    public void removeLike(Long filmId, Long userId) throws DataExistException {
+    public void removeLike(Long filmId, Long userId) {
         String sqlQuery = "delete from film_user where FILM_ID = ? AND USER_ID = ?";
         int c = jdbcTemplate.update(sqlQuery, filmId, userId);
         if (c > 0) {
