@@ -11,11 +11,13 @@ public interface FilmStorage {
 
     Film updateFilm(Film film) throws DataExistException, ValidationException;
 
-    void removeAllFilms();
-
     void removeFilmById(long id) throws DataExistException;
 
     List<Film> getAllFilms();
 
     Film getFilmById(long id) throws DataExistException;
+
+    void addLike(Long filmId, Long userId) throws DataExistException;
+
+    void removeLike(Long filmId, Long userId) throws DataExistException;
 }

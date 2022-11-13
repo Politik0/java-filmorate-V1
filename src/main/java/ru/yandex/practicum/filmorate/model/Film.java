@@ -5,8 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 
 @Builder
@@ -21,6 +20,8 @@ public class Film {
     private LocalDate releaseDate;
     @NotNull
     private int duration;
+    private Mpa mpa;
+    private List<Genre> genres;
     @Builder.Default
     private Set<Long> likes = new TreeSet<>();
 
@@ -38,5 +39,16 @@ public class Film {
         } else {
             return likes.size();
         }
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("name", name);
+        values.put("description", description);
+        values.put("release_date", releaseDate);
+        values.put("film_duration", duration);
+        values.put("mpa_id", mpa.getId());
+        values.put("genres", genres);
+        return  values;
     }
 }
